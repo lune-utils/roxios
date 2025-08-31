@@ -82,6 +82,29 @@ local logger = Logger.new("Roxios")
 ]=]
 local Roxios = {}
 
+local function decode(data: string): any | string
+	-- Try to decode as JSON first
+	local isJson, parsedResponse = pcall(serde.decode, "json" :: "json", data)
+	if isJson then
+		return parsedResponse
+	end
+
+	-- If JSON fails, try to decode as YAML
+	local isYaml, parsedResponse = pcall(serde.decode, "yaml" :: "yaml", data)
+	if isYaml then
+		return parsedResponse
+	end
+
+	-- If JSON and YAML fails, try to decode as TOML
+	local isToml, parsedResponse = pcall(serde.decode, "toml" :: "toml", data)
+	if isToml then
+		return parsedResponse
+	end
+
+	-- If both JSON and YAML fail, return nil to indicate failure
+	return data
+end
+
 --[=[
 	Perform a custom HTTP request.
 
@@ -112,14 +135,9 @@ function Roxios.request(options: Options): future.FutureLike<(any, net.FetchResp
 
 		if ok then
 			if response.ok then
-				local didParse, parsedResponse = pcall(serde.decode, "json" :: "json" | "toml" | "yaml", response.body)
+				local parsedResponse = decode(response.body)
 
-				if didParse then
-					return parsedResponse, response
-				else
-					logger:warn("Failed to parse response body as JSON! Setting parsedResponse to nil")
-					return nil, response
-				end
+				return parsedResponse, response
 			else
 				return logger:error(`{response.statusCode} - {response.statusMessage}`)
 			end
