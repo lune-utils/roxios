@@ -143,7 +143,8 @@ function Roxios.request(options: Options): future.FutureLike<(any, net.FetchResp
 
 		if ok then
 			if response.ok then
-				local parsedResponse = decode(response.body, response.headers["Content-Type"])
+				local parsedResponse =
+					decode(response.body, response.headers["Content-Type"] or response.headers["content-type"])
 
 				return parsedResponse, response
 			else
