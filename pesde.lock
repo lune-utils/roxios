@@ -5,9 +5,11 @@ name = "lune_utils/roxios"
 version = "0.1.0"
 target = "lune"
 
-[graph."yetanotherclown/luau_futures@2.0.0-beta.3 luau"]
-direct = ["future", { name = "yetanotherclown/luau_futures", version = "^2.0.0-beta.3", index = "default", target = "luau" }, "standard"]
+[graph."lune_utils/futures@0.1.0 luau"]
+direct = ["futures", { repo = "https://github.com/lune-utils/futures", rev = "6ce822d" }, "standard"]
 
-[graph."yetanotherclown/luau_futures@2.0.0-beta.3 luau".pkg_ref]
-ref_ty = "pesde"
-index_url = "https://github.com/pesde-pkg/index"
+[graph."lune_utils/futures@0.1.0 luau".pkg_ref]
+ref_ty = "git"
+repo = "https://github.com/lune-utils/futures"
+tree_id = "3ea05bed2e62268168ef7a9d619d96c9add4c866"
+new_structure = true
